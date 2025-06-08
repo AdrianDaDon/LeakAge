@@ -10,11 +10,11 @@ import {
   Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import CustomInput from '../components/CustomInput';
-import CustomButton from '../components/CustomButton';
-import { SignInFormData, FormErrors } from '../types/auth';
-import { validateSignInForm } from '../utils/validation';
-import { authService } from '../services/authService';
+import CustomInput from '../../components/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import { SignInFormData, FormErrors } from '../../types/auth';
+import { validateSignInForm } from '../../utils/validation';
+import { authService } from '../../utils/services/authService';
 
 interface SignInScreenProps {
   onSignInSuccess: () => void;
@@ -33,10 +33,10 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (field: keyof SignInFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev: any) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -105,7 +105,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
             label="Email Address"
             placeholder="Enter your email"
             value={formData.email}
-            onChangeText={(value) => handleInputChange('email', value)}
+            onChangeText={(value: string) => handleInputChange('email', value)}
             error={errors.email}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -117,7 +117,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
             label="Password"
             placeholder="Enter your password"
             value={formData.password}
-            onChangeText={(value) => handleInputChange('password', value)}
+            onChangeText={(value: string) => handleInputChange('password', value)}
             error={errors.password}
             isPassword
             autoComplete="password"

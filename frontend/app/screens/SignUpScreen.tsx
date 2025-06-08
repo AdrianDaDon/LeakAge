@@ -10,11 +10,11 @@ import {
   Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import CustomInput from '../components/CustomInput';
-import CustomButton from '../components/CustomButton';
-import { SignUpFormData, FormErrors } from '../types/auth';
-import { validateSignUpForm } from '../utils/validation';
-import { authService } from '../services/authService';
+import CustomInput from '../../components/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import { SignUpFormData, FormErrors } from '../../types/auth';
+import { validateSignUpForm } from '../../utils/validation';
+import { authService } from '../../utils/services/authService';
 
 interface SignUpScreenProps {
   onSignUpSuccess: () => void;
@@ -37,10 +37,10 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleInputChange = (field: keyof SignUpFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev: any) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -100,7 +100,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 label="First Name"
                 placeholder="John"
                 value={formData.firstName}
-                onChangeText={(value) => handleInputChange('firstName', value)}
+                onChangeText={(value: string) => handleInputChange('firstName', value)}
                 error={errors.firstName}
                 autoCapitalize="words"
                 icon="👤"
@@ -111,7 +111,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 label="Last Name"
                 placeholder="Doe"
                 value={formData.lastName}
-                onChangeText={(value) => handleInputChange('lastName', value)}
+                onChangeText={(value: string) => handleInputChange('lastName', value)}
                 error={errors.lastName}
                 autoCapitalize="words"
                 icon="👤"
@@ -123,7 +123,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
             label="Email Address"
             placeholder="john.doe@example.com"
             value={formData.email}
-            onChangeText={(value) => handleInputChange('email', value)}
+            onChangeText={(value: string) => handleInputChange('email', value)}
             error={errors.email}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -135,7 +135,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
             label="Password"
             placeholder="Create a strong password"
             value={formData.password}
-            onChangeText={(value) => handleInputChange('password', value)}
+            onChangeText={(value: string) => handleInputChange('password', value)}
             error={errors.password}
             isPassword
             autoComplete="password-new"
@@ -146,7 +146,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
             label="Confirm Password"
             placeholder="Confirm your password"
             value={formData.confirmPassword}
-            onChangeText={(value) => handleInputChange('confirmPassword', value)}
+            onChangeText={(value: string) => handleInputChange('confirmPassword', value)}
             error={errors.confirmPassword}
             isPassword
             autoComplete="password-new"
