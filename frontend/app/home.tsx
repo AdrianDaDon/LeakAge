@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import DescriptionScreen from "./descriptionScreen";
 
-type AuthScreen = "signIn" | "signUp" | "home";
+type AuthScreen = "signIn" | "signUp" | "report";
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AuthScreen>("signIn");
 
   const handleSignInSuccess = () => {
-    setCurrentScreen("home");
+    setCurrentScreen("report");
   };
 
   const handleSignUpSuccess = () => {
-    setCurrentScreen("home");
+    setCurrentScreen("report");
   };
 
   const navigateToSignUp = () => {
@@ -40,11 +41,9 @@ const App: React.FC = () => {
             onNavigateToSignIn={navigateToSignIn}
           />
         );
-      case "home":
+      case "report":
         return (
-          <View style={styles.homeContainer}>
-            <Text style={styles.homeText}>Welcome! You're signed </Text>
-          </View>
+          <DescriptionScreen />
         );
       default:
         return null;
