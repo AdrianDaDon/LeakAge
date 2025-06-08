@@ -1,106 +1,74 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
+import SignInScreen from "./screens/SignInScreen";
+import SignUpScreen from "./screens/SignUpScreen";
 
-export default function HomeScreen() {
-  const handleRestart = () => {
-    router.replace('/');
+type AuthScreen = "signIn" | "signUp" | "home";
+
+const App: React.FC = () => {
+  const [currentScreen, setCurrentScreen] = useState<AuthScreen>("signIn");
+
+  const handleSignInSuccess = () => {
+    setCurrentScreen("home");
   };
 
-  return (
-    <View style={styles.container}>
-      <StatusBar style="dark" />
-      
-      <View style={styles.content}>
-        <Text style={styles.title}>🎉 Welcome to the App!</Text>
-        <Text style={styles.subtitle}>
-          You've successfully completed the onboarding process
-        </Text>
-        
-        <View style={styles.features}>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>✨</Text>
-            <Text style={styles.featureText}>Amazing Features</Text>
+  const handleSignUpSuccess = () => {
+    setCurrentScreen("home");
+  };
+
+  const navigateToSignUp = () => {
+    setCurrentScreen("signUp");
+  };
+
+  const navigateToSignIn = () => {
+    setCurrentScreen("signIn");
+  };
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case "signIn":
+        return (
+          <SignInScreen
+            onSignInSuccess={handleSignInSuccess}
+            onNavigateToSignUp={navigateToSignUp}
+          />
+        );
+      case "signUp":
+        return (
+          <SignUpScreen
+            onSignUpSuccess={handleSignUpSuccess}
+            onNavigateToSignIn={navigateToSignIn}
+          />
+        );
+      case "home":
+        return (
+          <View style={styles.homeContainer}>
+            <Text style={styles.homeText}>Welcome! You're signed </Text>
           </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>🚀</Text>
-            <Text style={styles.featureText}>Fast Performance</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>💎</Text>
-            <Text style={styles.featureText}>Premium Experience</Text>
-          </View>
-        </View>
-        
-        <TouchableOpacity style={styles.button} onPress={handleRestart}>
-          <Text style={styles.buttonText}>Restart Demo</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <View style={styles.container}>{renderScreen()}</View>;
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
   },
-  content: {
+  homeContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9fafb",
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
-    marginBottom: 40,
-    lineHeight: 24,
-  },
-  features: {
-    marginBottom: 40,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    paddingHorizontal: 20,
-  },
-  featureIcon: {
+  homeText: {
     fontSize: 24,
-    marginRight: 15,
-  },
-  featureText: {
-    fontSize: 16,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  button: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    shadowColor: '#6366f1',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "#111827",
   },
 });
+
+export default App;
