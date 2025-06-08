@@ -71,8 +71,8 @@ export default function SplashScreen() {
           <Text style={styles.logoIcon}>🚀</Text>
         </View>
         
-        <Text style={styles.appName}>WelcomeApp</Text>
-        <Text style={styles.tagline}>Your journey starts here</Text>
+        <Text style={styles.appName}>LeakWatch</Text>
+        <Text style={styles.tagline}>Helping Communities tacke water wastage</Text>
       </Animated.View>
 
       {/* Loading indicator */}

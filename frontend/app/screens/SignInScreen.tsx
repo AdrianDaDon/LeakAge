@@ -159,11 +159,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
           </View>
         </View>
 
-        <View style={styles.demoInfo}>
-          <Text style={styles.demoTitle}>Demo Credentials:</Text>
-          <Text style={styles.demoText}>Email: demo@example.com</Text>
-          <Text style={styles.demoText}>Password: password123</Text>
-        </View>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -173,12 +169,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',
+
   },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 40,
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
