@@ -8,11 +8,10 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import { PhotoData } from '../types/report';
-import { imageService } from '../utils/services/imageService';
+import * as ImagePicker from 'expo-image-picker';
 
 interface PhotoPickerProps {
-  onPhotoSelected: (photo: PhotoData) => void;
+  onPhotoSelected: (photoUri: string) => void;
   disabled?: boolean;
 }
 
@@ -21,53 +20,43 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({ onPhotoSelected, disabled = f
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('');
 
-  const handleCameraPress = async () => {
+  const handleImagePick = async (useCamera: boolean) => {
     setIsModalVisible(false);
     setIsLoading(true);
-    setLoadingText('Taking photo...');
+    setLoadingText(useCamera ? 'Taking photo...' : 'Selecting photo...');
 
     try {
-      const photo = await imageService.pickImageFromCamera();
-      if (photo) {
+      const permissionResult = useCamera
+        ? await ImagePicker.requestCameraPermissionsAsync()
+        : await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Required', 'Camera or gallery access is needed.');
+        setIsLoading(false);
+        return;
+      }
+
+      const result = useCamera
+        ? await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 1 })
+        : await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, quality: 1 });
+
+      if (!result.cancelled && result.assets.length > 0) {
         setLoadingText('Extracting location...');
-        onPhotoSelected(photo);
+        onPhotoSelected(result.assets[0].uri);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to take photo. Please try again.');
+      Alert.alert('Error', 'Failed to select image.');
     } finally {
       setIsLoading(false);
       setLoadingText('');
     }
-  };
-
-  const handleGalleryPress = async () => {
-    setIsModalVisible(false);
-    setIsLoading(true);
-    setLoadingText('Selecting photo...');
-
-    try {
-      const photo = await imageService.pickImageFromGallery();
-      if (photo) {
-        setLoadingText('Extracting location...');
-        onPhotoSelected(photo);
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Failed to select photo. Please try again.');
-    } finally {
-      setIsLoading(false);
-      setLoadingText('');
-    }
-  };
-
-  const showImagePicker = () => {
-    setIsModalVisible(true);
   };
 
   return (
     <>
-      <TouchableOpacity
-        style={[styles.addButton, disabled && styles.addButtonDisabled]}
-        onPress={showImagePicker}
+      <TouchableOpacity 
+        style={[styles.addButton, disabled && styles.addButtonDisabled]} 
+        onPress={() => setIsModalVisible(true)} 
         disabled={disabled || isLoading}
       >
         <Text style={styles.addButtonIcon}>📷</Text>
@@ -83,38 +72,36 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({ onPhotoSelected, disabled = f
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select Photo Source</Text>
-            
-            <TouchableOpacity style={styles.modalButton} onPress={handleCameraPress}>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePick(true)}>
               <Text style={styles.modalButtonIcon}>📸</Text>
               <Text style={styles.modalButtonText}>Take Photo</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.modalButton} onPress={handleGalleryPress}>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePick(false)}>
               <Text style={styles.modalButtonIcon}>🖼️</Text>
               <Text style={styles.modalButtonText}>Choose from Gallery</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[styles.modalButton, styles.cancelButton]}
-              onPress={() => setIsModalVisible(false)}
-            >
+            <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setIsModalVisible(false)}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <Modal visible={isLoading} transparent>
-        <View style={styles.loadingOverlay}>
-          <View style={styles.loadingContent}>
-            <ActivityIndicator size="large" color="#6366f1" />
-            <Text style={styles.loadingText}>{loadingText}</Text>
+      {isLoading && (
+        <Modal visible={isLoading} transparent>
+          <View style={styles.loadingOverlay}>
+            <View style={styles.loadingContent}>
+              <ActivityIndicator size="large" color="#6366f1" />
+              <Text style={styles.loadingText}>{loadingText}</Text>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
     </>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   addButton: {
